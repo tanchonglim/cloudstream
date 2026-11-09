@@ -814,4 +814,16 @@
     </plurals>
     <string name="player_is_live">Live</string>
     <string name="installed_plugins">Installed plugins</string>
+    <string name="remote_control_category">Phone remote control</string>
+    <string name="remote_control_enable">Allow phone remote control</string>
+    <string name="remote_control_enable_des">Lets the CloudStream Remote app on your phone search, open titles and change settings on this device over your local network</string>
+    <string name="remote_control_address">Address</string>
+    <string name="remote_control_not_running">Not running</string>
+    <string name="remote_control_revoke">Forget paired phones</string>
+    <string name="remote_control_revoke_des">%d paired</string>
+    <string name="remote_control_revoked_toast">All phones have been unpaired</string>
+    <string name="remote_control_pair_title">Pair phone remote</string>
+    <string name="remote_control_pair_message">Enter this code in the CloudStream Remote app:\n\n%s</string>
+    <string name="remote_control_paired_toast">Paired with %s</string>
+    <string name="remote_control_advanced_settings">Advanced (all stored values)</string>
 </resources>

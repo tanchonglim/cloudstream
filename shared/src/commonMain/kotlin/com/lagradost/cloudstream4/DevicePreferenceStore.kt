@@ -195,6 +195,9 @@ class GeneralPreferences(preferences: PreferenceStore) {
     val concurrentConnections = preferences.getInt("download_concurrent_key", 3)
     val batterOptimization = preferences.getBoolean("battery_optimisation_key", false)
 
+    /** Local network server used by the CloudStream Remote phone app */
+    val remoteControlEnabled = preferences.getBoolean("remote_control_enabled_key", false)
+
     /** Please note that it used R.array.dns_pref before, this was a bug and caused this setting to be language sensitive **/
     val dns = preferences.getInt("dns_key", 0)
 

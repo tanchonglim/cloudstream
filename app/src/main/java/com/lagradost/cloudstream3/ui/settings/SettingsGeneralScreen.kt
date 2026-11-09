@@ -27,6 +27,7 @@ import com.lagradost.cloudstream3.app
 import com.lagradost.cloudstream3.insecureApp
 import com.lagradost.cloudstream3.mvvm.logError
 import com.lagradost.cloudstream3.network.initClient
+import com.lagradost.cloudstream3.remote.RemoteControlServer
 import com.lagradost.cloudstream3.ui.settings.SettingsProvidersScreen.toStringRes
 import com.lagradost.cloudstream3.utils.BatteryOptimizationChecker.isAppRestricted
 import com.lagradost.cloudstream3.utils.BatteryOptimizationChecker.showRequestIgnoreBatteryOptDialog
@@ -87,6 +88,9 @@ object SettingsGeneralScreen : SearchableSettings {
 
         var isBatteryShown by remember { mutableStateOf(false) }
         val context = LocalContext.current
+
+        val remoteControlEnabled by settings.general.remoteControlEnabled.collectAsState()
+        var pairedPhones by remember { mutableStateOf(RemoteControlServer.pairedCount(context)) }
 
         if (isBatteryShown) {
             ActionDialog(
@@ -193,6 +197,41 @@ object SettingsGeneralScreen : SearchableSettings {
                             } else {
                                 showToast(R.string.app_unrestricted_toast)
                             }
+                        }
+                    ),
+                )
+            ),
+
+            Preference.PreferenceGroup(
+                title = stringResource(R.string.remote_control_category),
+                preferenceItems = persistentListOf(
+                    Preference.PreferenceItem.SwitchPreference(
+                        title = stringResource(R.string.remote_control_enable),
+                        subtitle = stringResource(R.string.remote_control_enable_des),
+                        icon = painterResource(R.drawable.ic_baseline_tv_24),
+                        preference = settings.general.remoteControlEnabled,
+                    ),
+                    Preference.PreferenceItem.TextPreference(
+                        title = stringResource(R.string.remote_control_address),
+                        subtitle = if (remoteControlEnabled) {
+                            // The server may start a moment after this recomposes, so fall back to the default port
+                            val port = RemoteControlServer.port.takeIf { it > 0 }
+                                ?: RemoteControlServer.DEFAULT_PORT
+                            RemoteControlServer.localAddresses().ifEmpty { listOf("localhost") }
+                                .joinToString(", ") { "$it:$port" }
+                        } else {
+                            stringResource(R.string.remote_control_not_running)
+                        },
+                        enabled = remoteControlEnabled,
+                    ),
+                    Preference.PreferenceItem.TextPreference(
+                        title = stringResource(R.string.remote_control_revoke),
+                        subtitle = stringResource(R.string.remote_control_revoke_des, pairedPhones),
+                        enabled = pairedPhones > 0,
+                        onClick = {
+                            RemoteControlServer.revokeAll(context)
+                            pairedPhones = 0
+                            showToast(R.string.remote_control_revoked_toast)
                         }
                     ),
                 )
